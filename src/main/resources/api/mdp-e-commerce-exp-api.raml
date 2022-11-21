@@ -1,0 +1,58 @@
+#%RAML 1.0
+title: MDP e-commerce Exp-API
+version: 1.0
+description: API for building MDP e-commerce 
+protocols:
+  - HTTP
+  - HTTPS
+/create:
+  post:
+    description: To create a record
+    body:
+      application/json:
+        example: !include dataTypes/createData.raml
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include library-responses/200response-library.raml
+
+/select:
+  get:
+    description: To fetch the data from table
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "message" : "Data fetched successfully"
+              }
+/update:
+  put:
+    description: To update the data in table
+    body:
+      application/json:
+        example: !include dataTypes/createData.raml
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "message" : "Data updated successfully"
+              }
+/delete:
+  delete:
+    description: To delete or remove the data in db
+    body:
+      application/json:
+        example: !include dataTypes/createData.raml
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "message" : "Data deleted successfully"
+              }
