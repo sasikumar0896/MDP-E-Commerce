@@ -6,8 +6,8 @@
 http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
-	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="c90b4557-dcbb-4193-9b10-b341f5f28a7f" basePath="${orders.https.basePath}">
-		<http:request-connection host="${orders.https.host}" port="${orders.https.port}" maxConnections="${https.maxConnections}" connectionIdleTimeout="${https.connectionIdleTimeOut}" responseBufferSize="${https.responseBufferSize}"/>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="7c447987-7779-41d9-81f5-d8b0985fad2c" basePath="/orders">
+		<http:request-connection host="localhost" port="22" maxConnections="${https.maxConnections}" connectionIdleTimeout="${https.connectionIdleTimeOut}" responseBufferSize="${https.responseBufferSize}" protocol="HTTPS"/>
 	</http:request-config>
 	<sub-flow name="ordersSub_Flow" doc:id="7c447987-7779-41d9-81f5-d8b0985fad2c" >
 		<json-logger:logger doc:name="Start Log" doc:id="871268b4-d163-4184-be63-a254a7bf8ad9" config-ref="JSON_Logger_Config" message="Orders subflow started"/>
@@ -20,7 +20,7 @@ output application/json
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<http:request method="POST" doc:name="Request " doc:id="aa53f64e-5ca3-413c-8e7d-9b0045fde355" config-ref="HTTP_Request_configuration" path="${online.https.orders.path}"/>
+		<http:request method="POST" doc:name="Request " doc:id="aa53f64e-5ca3-413c-8e7d-9b0045fde355" config-ref="HTTP_Request_configuration" path="/create"/>
 		<json-logger:logger doc:name="End Log" doc:id="438ead4e-c902-4c18-a75c-9b852084bf65" config-ref="JSON_Logger_Config" message="Orders sub flow ended" tracePoint="END"/>
 	</sub-flow>
 </mule>
