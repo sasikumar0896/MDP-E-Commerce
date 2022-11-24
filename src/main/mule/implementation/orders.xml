@@ -21,7 +21,7 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<http:request method="POST" doc:name="Request " doc:id="aa53f64e-5ca3-413c-8e7d-9b0045fde355" url="http://mdp-e-commerce-p-api.us-e2.cloudhub.io/api/p/v1/create"/>
+		<http:request method="POST" doc:name="Request " doc:id="aa53f64e-5ca3-413c-8e7d-9b0045fde355" config-ref="HTTP_Request_configuration" path="${online.https.orders.path}"/>
 		<ee:transform doc:name="Transform Message" doc:id="af1ccce4-cbd3-404a-859c-acf0e6458500" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
