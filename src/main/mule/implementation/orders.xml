@@ -9,11 +9,19 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
 http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd">
 	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="7c447987-7779-41d9-81f5-d8b0985fad2c" basePath="${orders.https.basePath}">
-		<http:request-connection host="${orders.https.host}" maxConnections="${https.maxConnections}" connectionIdleTimeout="${https.connectionIdleTimeOut}" responseBufferSize="${https.responseBufferSize}" port="${orders.https.port}"/>
+		<http:request-connection host="${orders.https.host}" maxConnections="${https.maxConnections}" connectionIdleTimeout="${https.connectionIdleTimeOut}" responseBufferSize="${https.responseBufferSize}" port="${orders.https.port}" usePersistentConnections="false"/>
 	</http:request-config>
 	<sub-flow name="ordersSub_Flow" doc:id="7c447987-7779-41d9-81f5-d8b0985fad2c" >
 		<json-logger:logger doc:name="Start Log" doc:id="871268b4-d163-4184-be63-a254a7bf8ad9" config-ref="JSON_Logger_Config" message="Orders subflow started"/>
-		<http:request method="POST" doc:name="Request " doc:id="aa53f64e-5ca3-413c-8e7d-9b0045fde355" config-ref="HTTP_Request_configuration" path="${online.https.orders.path}"/>
+		<ee:transform doc:name="Transform Message" doc:id="5f3229b0-624d-4451-b179-41690911cb3b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST" doc:name="Request " doc:id="aa53f64e-5ca3-413c-8e7d-9b0045fde355" url="http://mdp-e-commerce-p-api.us-e2.cloudhub.io/api/p/v1/create"/>
 		<ee:transform doc:name="Transform Message" doc:id="af1ccce4-cbd3-404a-859c-acf0e6458500" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
