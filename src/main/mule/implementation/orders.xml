@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd">
 	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="7c447987-7779-41d9-81f5-d8b0985fad2c" basePath="${orders.https.basePath}">
-		<http:request-connection host="${orders.https.host}" maxConnections="${https.maxConnections}" connectionIdleTimeout="${https.connectionIdleTimeOut}" responseBufferSize="${https.responseBufferSize}" port="${orders.https.port}" protocol="HTTPS"/>
+		<http:request-connection host="${orders.https.host}" maxConnections="${https.maxConnections}" connectionIdleTimeout="${https.connectionIdleTimeOut}" responseBufferSize="${https.responseBufferSize}" port="${orders.https.port}"/>
 	</http:request-config>
 	<sub-flow name="ordersSub_Flow" doc:id="7c447987-7779-41d9-81f5-d8b0985fad2c" >
 		<json-logger:logger doc:name="Start Log" doc:id="871268b4-d163-4184-be63-a254a7bf8ad9" config-ref="JSON_Logger_Config" message="Orders subflow started"/>
-		<ee:transform doc:name="Request Payload" doc:id="08d997d1-6fd2-495f-9c1a-450847de8c94" >
+		<http:request method="POST" doc:name="Request " doc:id="aa53f64e-5ca3-413c-8e7d-9b0045fde355" config-ref="HTTP_Request_configuration" path="${online.https.orders.path}"/>
+		<ee:transform doc:name="Transform Message" doc:id="af1ccce4-cbd3-404a-859c-acf0e6458500" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
+output application/java
 ---
-	payload
-]]></ee:set-payload>
+{
+	"status" : "success in exp layer"
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<http:request method="POST" doc:name="Request " doc:id="aa53f64e-5ca3-413c-8e7d-9b0045fde355" config-ref="HTTP_Request_configuration" path="${online.https.orders.path}"/>
 		<json-logger:logger doc:name="End Log" doc:id="438ead4e-c902-4c18-a75c-9b852084bf65" config-ref="JSON_Logger_Config" message="Orders sub flow ended" tracePoint="END"/>
 	</sub-flow>
 </mule>
